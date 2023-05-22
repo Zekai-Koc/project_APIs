@@ -7,9 +7,6 @@ export const API_Key_Openweather = API_KEYS.OpenWeather;
 /* -------------------------------------------------------- */
 const locationTimezone = document.querySelector("#location-timezone");
 const temperatureDegree = document.querySelector("#temperature-degree");
-// const temperatureDegreeSpan = document.querySelector(
-//    ".temperature-degree span"
-// );
 const temperatureDescription = document.querySelector(
    "#temperature-description"
 );
@@ -21,13 +18,12 @@ const defaultCoordinates = {
    latA: 52.377956,
    longA: 4.89707,
 
-   // for testing - Istanbul
+   // Istanbul (for testing.)
    latI: 41.01,
    longI: 28.97,
 };
 
 setInterval(() => {
-   // console.log("Refreshing weather...");
    getWeatherData();
 }, 200000);
 
@@ -50,9 +46,6 @@ export function getWeatherData() {
          const long = position.coords.longitude || defaultCoordinates.longA;
          const lat = position.coords.latitude || defaultCoordinates.latA;
 
-         // const long = defaultCoordinates.longI;
-         // const lat = defaultCoordinates.latI;
-
          const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${long}&appid=${API_Key_Openweather}&units=metric`;
 
          fetch(url)
@@ -70,7 +63,6 @@ export function getWeatherData() {
 }
 
 function renderWeatherData(data) {
-   // console.log("rendering new weather data", data);
    const { main, name, weather, sys } = data;
    locationTimezone.innerHTML = `${name}`;
    temperatureDegree.innerHTML = Math.round(main.temp);
@@ -153,12 +145,6 @@ function drawWeatherDetailsTable(data) {
       } else {
          const getHoursFromDate = new Date(element.dt_txt).getHours();
          const getMinutesFromDate = new Date(element.dt_txt).getMinutes();
-         // const convertHours =
-         //    getHoursFromDate < 10 ? "0" + getHoursFromDate : getHoursFromDate;
-         // const convertMinutes =
-         //    getMinutesFromDate < 10
-         //       ? "0" + getMinutesFromDate
-         //       : getMinutesFromDate;
 
          const convertHours = getHoursFromDate.toString().padStart(2, "0");
          const convertMinutes = getMinutesFromDate.toString().padStart(2, "0");
@@ -208,7 +194,6 @@ function getWeather5days() {
             })
             .then((response) => {
                weatherList = response.list;
-               // console.log("weatherList: ", weatherList);
                drawWeatherDetailsTable(weatherList.slice(0, 5));
             });
       });
@@ -225,7 +210,6 @@ for (const radioButton of radioButtonsWeatherDetails) {
 function changeHours() {
    if (this.checked) {
       const selectedHours = this.value;
-      console.log("selectedHours: ", selectedHours);
       switch (selectedHours) {
          case "6 hours":
             drawWeatherDetailsTable(weatherList.slice(0, 3));
@@ -270,47 +254,29 @@ function drawWeatherDetailsGraph(data) {
 
    if (myChart != null) myChart.destroy();
 
-   console.log("data: ", data);
-
    let labelsHours = [];
    let dataHeat = [];
    data.forEach((element) => {
       const getHoursFromDate = new Date(element.dt_txt).getHours();
       const getMinutesFromDate = new Date(element.dt_txt).getMinutes();
 
-      // const convertHours =
-      //    getHoursFromDate < 10 ? "0" + getHoursFromDate : getHoursFromDate;
-      // const convertMinutes =
-      //    getMinutesFromDate < 10
-      //       ? "0" + getMinutesFromDate
-      //       : getMinutesFromDate;
-
       const convertHours = getHoursFromDate.toString().padStart(2, "0");
       const convertMinutes = getMinutesFromDate.toString().padStart(2, "0");
 
-      // tempColHour.innerText = convertHours + ":" + convertMinutes;
       labelsHours.push(convertHours + ":" + convertMinutes);
 
       const tempHeatValue = Math.round(element.main.temp);
-      // const convertHeat =
-      //    tempHeatValue > 9 ? tempHeatValue : "0" + tempHeatValue;
       dataHeat.push(tempHeatValue);
    });
-
-   console.log("labelsHours: ", labelsHours);
-   console.log("dataHeat: ", dataHeat);
 
    myChart = new Chart(ctx, {
       type: "bar",
       data: {
-         // labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
          labels: labelsHours,
          datasets: [
             {
                label: "5 Days Forecast",
-               // data: [12, 19, 3, 5, 2, 3],
                data: dataHeat,
-               // borderWidth: 50,
             },
          ],
       },
@@ -326,18 +292,12 @@ function drawWeatherDetailsGraph(data) {
 
 let weatherListGraph = [];
 function getWeather5daysGraph() {
-   // console.log("uuuuuuuuuuuuu");
    if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
          const long = position.coords.longitude;
          const lat = position.coords.latitude;
 
-         // console.log("long", long);
-         // console.log("lat", lat);
-
          const urlFiveDays = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${long}&appid=${API_Key_Openweather}&units=metric`;
-
-         // console.log("urlFiveDays", urlFiveDays);
 
          fetch(urlFiveDays)
             .then((data) => {
@@ -345,43 +305,8 @@ function getWeather5daysGraph() {
             })
             .then((response) => {
                weatherListGraph = response.list;
-               // console.log("response: ", response.list);
-               // console.log("weatherList: ", weatherList);
                drawWeatherDetailsGraph(weatherListGraph);
             });
       });
    }
 }
-
-// function getWeather() {
-//    let long;
-//    let lat;
-
-//    let srcWeatherIcon = "https://openweathermap.org/img/wn/10d@2x.png";
-
-//    if (navigator.geolocation) {
-//       navigator.geolocation.getCurrentPosition((position) => {
-//          long = position.coords.longitude;
-//          lat = position.coords.latitude;
-
-//          const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${long}&appid=${API_Key_Openweather}&units=metric`;
-
-//          const currentWeather = fetch(url)
-//             .then((data) => {
-//                return data.json();
-//             })
-//             .then((response) => {
-//                console.log(response);
-//                const { main, name, weather, sys } = response;
-//                locationTimezone.innerHTML = `(${name} / ${sys.country})`;
-//                temperatureDegree.innerHTML = Math.round(main.temp);
-//                temperatureDescription.innerHTML = weather[0].description;
-//                currentWeatherIcon.src = `https://openweathermap.org/img/wn/${weather[0].icon}@2x.png`;
-//                flagIcon.src = matchFlag(sys.country);
-//             })
-//             .catch((err) => {
-//                console.log("Error: ", err);
-//             });
-//       });
-//    }
-// }

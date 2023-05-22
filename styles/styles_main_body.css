@@ -1,7 +1,6 @@
 /* ----------------------------------------------------- */
 /*                  Main Body Styling                    */
 /* ----------------------------------------------------- */
-
 * {
    margin: 0;
    padding: 0;
@@ -44,18 +43,8 @@ body {
    border-radius: 10px;
 }
 
-/* .movie img:hover {
-   transform: scale(1.2);
-   transition-timing-function: ease-in-out;
-   transition-duration: 0.7s;
-   overflow-y: visible;
-   cursor: pointer;
-   z-index: 111;
-} */
-
 .movie-info {
    display: none;
-   /* display: flex; */
    color: #eee;
    align-items: center;
    justify-content: space-between;

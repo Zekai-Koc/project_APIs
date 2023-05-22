@@ -31,13 +31,7 @@
 .container-footer-top-left {
    display: flex;
    align-items: center;
-   /* background-color: cadetblue; */
-   /* width: 90%; */
    padding-left: 20px;
-}
-
-.container-footer-top-left h3 {
-   /* border: 1px solid red; */
 }
 
 #location-timezone {
@@ -63,18 +57,15 @@
 .wrapper-footer-middle-right {
    display: flex;
    width: 400px;
-   /* border: 2px solid red; */
    margin-left: auto;
 }
 
 /*                       Footer Top Middle                     */
 /* ----------------------------------------------------------- */
 .container-footer-top-middle {
-   /* width: 230px; */
    display: flex;
    align-items: center;
    justify-content: space-around;
-   /* background-color: black; */
    margin-left: 20px;
 }
 
@@ -96,7 +87,6 @@
    width: 100%;
    background: linear-gradient(rgb(6, 28, 150), rgb(47, 150, 163));
    padding: 10px;
-   /* background-color: red; */
 }
 
 .container-footer-bottom span {
