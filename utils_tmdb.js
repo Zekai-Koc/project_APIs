@@ -1,7 +1,7 @@
-import { api_keys } from "./api_keys.js";
+import { API_KEYS } from "./api_keys.js";
 import { renderModalForm } from "./modal_form.js";
 
-const API_Key_TMDB = "api_key=" + api_keys[0].API_Key_TMDB;
+const API_Key_TMDB = "api_key=" + API_KEYS.TMDB;
 
 const baseUrlTMDB = `https://api.themoviedb.org/3/`;
 const discoverTMDB = `discover/movie?`;

@@ -1,6 +1,6 @@
-import { api_keys } from "./api_keys.js";
+import { API_KEYS } from "./api_keys.js";
 
-const API_Key_RAPID = api_keys[1].API_Key_Rapid;
+const API_Key_RAPID = API_KEYS.Rapid;
 const optionsRAPID = {
    method: "GET",
    headers: {
@@ -10,7 +10,7 @@ const optionsRAPID = {
 };
 const baseUrlRAPID = `https://online-movie-database.p.rapidapi.com/auto-complete?q=`;
 
-export async function moviesFromRAPID(searchTerm = "alone") {
+export async function moviesFromRAPID(searchTerm) {
    if (!searchTerm) return [];
    const url = baseUrlRAPID + searchTerm;
    try {
@@ -28,7 +28,7 @@ export async function moviesFromRAPID(searchTerm = "alone") {
       return finalResults;
    } catch (error) {
       throw new Error(
-         `Something went wrong while fetching popular movies (SEARCH MODE) from RAPID! \n ${error}`
+         `Something went wrong while fetching popular movies from RAPID! (Search Term: ${searchTerm})  \n ${error}`
       );
    }
 }

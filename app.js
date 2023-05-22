@@ -6,6 +6,7 @@ import { getWeatherData } from "./utils_weather.js";
 const submitButton = document.getElementById("submit-button");
 const searchMovieInput = document.getElementById("search-movie-input");
 const radioButtons = document.querySelectorAll('input[name="radio-api"]');
+const formHeaderSearch = document.getElementById("form-header-search");
 let tmdbSelected = true;
 
 window.addEventListener("load", main());
@@ -16,7 +17,7 @@ async function main() {
 
    renderMovies(await moviesFromTMDB("discover_mode"));
 
-   const temp = getWeatherData();
+   getWeatherData();
 }
 
 async function getMovies(searchTerm) {
@@ -28,10 +29,18 @@ async function getMovies(searchTerm) {
 submitButton.addEventListener("click", async (e) => {
    e.preventDefault();
    renderMovies(await getMovies(searchMovieInput.value));
+   searchMovieInput.value = "";
+});
+
+// Why following form submit event does not triggered?
+console.log("formHeaderSearch: ", formHeaderSearch);
+formHeaderSearch.addEventListener("submit", () => {
+   console.log("lllllllllllll");
 });
 
 async function renderMovies(movieList) {
    try {
+      // console.log("movieList: ", movieList);
       const mainSection = document.getElementById("main");
       if (movieList.length > 0) {
          mainSection.innerHTML = ``;
@@ -65,9 +74,16 @@ async function renderMovies(movieList) {
 
             movieDiv.appendChild(movieInfo);
 
-            movieDiv.innerHTML += `
-               <article data-overview="${element.movieOverview}"></article>
-               <article data-year="${element.movieDate}"></article>`;
+            const articleData = document.createElement("article");
+            articleData.dataset.overview = element.movieOverview;
+            articleData.dataset.movieDate = element.movieDate;
+            movieDiv.appendChild(articleData);
+
+            // movieDiv.innerHTML += `
+            //    <article data-overview="${element.movieOverview}"></article>
+            //    <article data-year="${element.movieDate}"></article>`;
+
+            // console.log("movieDiv: ", movieDiv);
 
             movieDiv.addEventListener("click", (e) => {
                if (e.target.tagName === "IMG")
@@ -86,7 +102,8 @@ async function renderMovies(movieList) {
          });
       } else {
          throw new Error(
-            "Please input a search term in the Search Movie section, Movie Title."
+            `We couldn't find any movie matching " ${searchMovieInput.value} " !
+            Please try with another search term in the Search Movie section.`
          );
       }
    } catch (error) {
@@ -112,7 +129,9 @@ function createInfoObject(e) {
          source: e.target.parentNode.children[0].src,
       },
       title: e.target.parentNode.children[1].firstElementChild.innerHTML,
-      year: e.target.parentNode.children[3].getAttribute("data-year"),
+
+      year: e.target.parentNode.children[2].getAttribute("data-movie-date"),
+
       rating: e.target.parentNode.children[1].children[1].innerHTML,
       genre: "",
       director: "",

@@ -55,8 +55,8 @@ body {
 
 .movie-info {
    display: none;
-   color: #eee;
    /* display: flex; */
+   color: #eee;
    align-items: center;
    justify-content: space-between;
    padding: 0.5rem 1rem 1rem;

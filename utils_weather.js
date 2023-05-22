@@ -1,6 +1,6 @@
-import { api_keys } from "./api_keys.js";
+import { API_KEYS } from "./api_keys.js";
 
-export const API_Key_Openweather = api_keys[2].API_Key_OpenWeather;
+export const API_Key_Openweather = API_KEYS.OpenWeather;
 
 /* -------------------------------------------------------- */
 /* ---------------- Weather Info Section ------------------ */
@@ -17,12 +17,17 @@ const currentWeatherIcon = document.querySelector("#current-weather-icon");
 const flagIcon = document.querySelector("#flag-icon");
 
 const defaultCoordinates = {
-   lat: 52.377956,
-   long: 4.89707,
+   // Amsterdam
+   latA: 52.377956,
+   longA: 4.89707,
+
+   // for testing - Istanbul
+   latI: 41.01,
+   longI: 28.97,
 };
 
 setInterval(() => {
-   console.log("Refreshing weather...");
+   // console.log("Refreshing weather...");
    getWeatherData();
 }, 200000);
 
@@ -42,8 +47,11 @@ let countryList = [];
 export function getWeatherData() {
    if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
-         const long = position.coords.longitude || defaultCoordinates.long;
-         const lat = position.coords.latitude || defaultCoordinates.lat;
+         const long = position.coords.longitude || defaultCoordinates.longA;
+         const lat = position.coords.latitude || defaultCoordinates.latA;
+
+         // const long = defaultCoordinates.longI;
+         // const lat = defaultCoordinates.latI;
 
          const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${long}&appid=${API_Key_Openweather}&units=metric`;
 
@@ -62,7 +70,7 @@ export function getWeatherData() {
 }
 
 function renderWeatherData(data) {
-   console.log("rendering new weather data");
+   // console.log("rendering new weather data", data);
    const { main, name, weather, sys } = data;
    locationTimezone.innerHTML = `${name}`;
    temperatureDegree.innerHTML = Math.round(main.temp);
@@ -72,11 +80,10 @@ function renderWeatherData(data) {
 }
 
 const matchFlag = (countryAbbreviation) => {
-   for (let i = 0; i < countryList.length; i++) {
-      if (countryAbbreviation.toUpperCase() === countryList[i].iso2)
-         return countryList[i].flag;
-   }
-   return "https://flagcdn.com/w320/nl.png";
+   const country = countryList.find(
+      (country) => countryAbbreviation.toUpperCase() === country.iso2
+   );
+   return country ? country.flag : "https://flagcdn.com/w320/nl.png";
 };
 
 const refreshWeatherIcon = document.getElementById("refresh-weather-icon");
@@ -146,12 +153,16 @@ function drawWeatherDetailsTable(data) {
       } else {
          const getHoursFromDate = new Date(element.dt_txt).getHours();
          const getMinutesFromDate = new Date(element.dt_txt).getMinutes();
-         const convertHours =
-            getHoursFromDate < 10 ? "0" + getHoursFromDate : getHoursFromDate;
-         const convertMinutes =
-            getMinutesFromDate < 10
-               ? "0" + getMinutesFromDate
-               : getMinutesFromDate;
+         // const convertHours =
+         //    getHoursFromDate < 10 ? "0" + getHoursFromDate : getHoursFromDate;
+         // const convertMinutes =
+         //    getMinutesFromDate < 10
+         //       ? "0" + getMinutesFromDate
+         //       : getMinutesFromDate;
+
+         const convertHours = getHoursFromDate.toString().padStart(2, "0");
+         const convertMinutes = getMinutesFromDate.toString().padStart(2, "0");
+
          tempColHour.innerText = convertHours + ":" + convertMinutes;
          tempRowHour.appendChild(tempColHour);
          const tempHeatValue = Math.round(element.main.temp);
@@ -191,7 +202,7 @@ function getWeather5days() {
 
          const urlFiveDays = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${long}&appid=${API_Key_Openweather}&units=metric`;
 
-         const currentWeather = fetch(urlFiveDays)
+         fetch(urlFiveDays)
             .then((data) => {
                return data.json();
             })
@@ -211,7 +222,7 @@ for (const radioButton of radioButtonsWeatherDetails) {
    radioButton.addEventListener("change", changeHours);
 }
 
-function changeHours(e) {
+function changeHours() {
    if (this.checked) {
       const selectedHours = this.value;
       console.log("selectedHours: ", selectedHours);
@@ -266,12 +277,17 @@ function drawWeatherDetailsGraph(data) {
    data.forEach((element) => {
       const getHoursFromDate = new Date(element.dt_txt).getHours();
       const getMinutesFromDate = new Date(element.dt_txt).getMinutes();
-      const convertHours =
-         getHoursFromDate < 10 ? "0" + getHoursFromDate : getHoursFromDate;
-      const convertMinutes =
-         getMinutesFromDate < 10
-            ? "0" + getMinutesFromDate
-            : getMinutesFromDate;
+
+      // const convertHours =
+      //    getHoursFromDate < 10 ? "0" + getHoursFromDate : getHoursFromDate;
+      // const convertMinutes =
+      //    getMinutesFromDate < 10
+      //       ? "0" + getMinutesFromDate
+      //       : getMinutesFromDate;
+
+      const convertHours = getHoursFromDate.toString().padStart(2, "0");
+      const convertMinutes = getMinutesFromDate.toString().padStart(2, "0");
+
       // tempColHour.innerText = convertHours + ":" + convertMinutes;
       labelsHours.push(convertHours + ":" + convertMinutes);
 
@@ -323,7 +339,7 @@ function getWeather5daysGraph() {
 
          // console.log("urlFiveDays", urlFiveDays);
 
-         const currentWeather = fetch(urlFiveDays)
+         fetch(urlFiveDays)
             .then((data) => {
                return data.json();
             })
